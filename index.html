@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Character Card Maker</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;700&display=swap" rel="stylesheet">
+
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+body{
+background:#080808;
+color:white;
+font-family:'Noto Serif KR', serif;
+padding:40px;
+}
+
+.wrapper{
+max-width:1400px;
+margin:auto;
+display:grid;
+grid-template-columns:400px 1fr;
+gap:40px;
+}
+
+.panel{
+background:#111;
+padding:25px;
+border:1px solid rgba(255,255,255,.1);
+}
+
+.panel h2{
+margin-bottom:20px;
+font-size:18px;
+}
+
+input,
+textarea{
+width:100%;
+margin-bottom:12px;
+padding:10px;
+background:#1a1a1a;
+border:1px solid rgba(255,255,255,.1);
+color:white;
+font-family:inherit;
+}
+
+textarea{
+resize:vertical;
+min-height:120px;
+}
+
+button{
+width:100%;
+padding:12px;
+background:#222;
+color:white;
+border:none;
+cursor:pointer;
+margin-top:10px;
+}
+
+button:hover{
+background:#333;
+}
+
+.card{
+background:#0d0d0d;
+border:1px solid rgba(255,255,255,.15);
+overflow:hidden;
+}
+
+.top{
+display:grid;
+grid-template-columns:350px 1fr;
+}
+
+.portrait{
+width:100%;
+height:600px;
+object-fit:cover;
+background:#111;
+}
+
+.info{
+padding:35px;
+}
+
+.name{
+font-size:42px;
+margin-bottom:30px;
+}
+
+.infoRow{
+margin-bottom:18px;
+}
+
+.label{
+font-size:12px;
+opacity:.6;
+letter-spacing:2px;
+margin-bottom:5px;
+}
+
+.value{
+font-size:18px;
+}
+
+.tags{
+display:flex;
+gap:10px;
+flex-wrap:wrap;
+}
+
+.tag{
+border:1px solid rgba(255,255,255,.2);
+padding:6px 12px;
+font-size:14px;
+}
+
+.section{
+padding:35px;
+border-top:1px solid rgba(255,255,255,.08);
+}
+
+.sectionTitle{
+font-size:20px;
+margin-bottom:15px;
+letter-spacing:2px;
+}
+
+.sectionText{
+line-height:1.8;
+white-space:pre-wrap;
+}
+
+@media(max-width:900px){
+
+.wrapper{
+grid-template-columns:1fr;
+}
+
+.top{
+grid-template-columns:1fr;
+}
+
+.portrait{
+height:500px;
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="wrapper">
+
+<div class="panel">
+
+<h2>캐릭터 입력</h2>
+
+<input type="file" id="imageUpload">
+
+<input id="nameInput" placeholder="이름">
+<input id="heightInput" placeholder="키">
+<input id="houseInput" placeholder="기숙사">
+
+<input id="keyword1" placeholder="성격 키워드 1">
+<input id="keyword2" placeholder="성격 키워드 2">
+<input id="keyword3" placeholder="성격 키워드 3">
+
+<textarea id="characterInfo" placeholder="캐릭터 정보"></textarea>
+
+<textarea id="ownerInfo" placeholder="오너 정보"></textarea>
+
+<button onclick="downloadCard()">
+PNG 저장
+</button>
+
+</div>
+
+<div id="card" class="card">
+
+<div class="top">
+
+<img
+id="previewImage"
+class="portrait"
+src="https://placehold.co/800x1200/111111/FFFFFF?text=Character">
+
+<div class="info">
+
+<div id="previewName" class="name">
+캐릭터 이름
+</div>
+
+<div class="infoRow">
+<div class="label">HEIGHT</div>
+<div id="previewHeight" class="value">170cm</div>
+</div>
+
+<div class="infoRow">
+<div class="label">HOUSE</div>
+<div id="previewHouse" class="value">기숙사</div>
+</div>
+
+<div class="infoRow">
+
+<div class="label">PERSONALITY</div>
+
+<div class="tags">
+
+<div id="tag1" class="tag">키워드</div>
+<div id="tag2" class="tag">키워드</div>
+<div id="tag3" class="tag">키워드</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="section">
+
+<div class="sectionTitle">
+CHARACTER
+</div>
+
+<div id="previewCharacter" class="sectionText">
+캐릭터 설명
+</div>
+
+</div>
+
+<div class="section">
+
+<div class="sectionTitle">
+OWNER
+</div>
+
+<div id="previewOwner" class="sectionText">
+오너 정보
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+function bind(inputId, targetId){
+
+document.getElementById(inputId).addEventListener('input', e => {
+document.getElementById(targetId).textContent = e.target.value;
+});
+
+}
+
+bind('nameInput','previewName');
+bind('heightInput','previewHeight');
+bind('houseInput','previewHouse');
+
+bind('keyword1','tag1');
+bind('keyword2','tag2');
+bind('keyword3','tag3');
+
+bind('characterInfo','previewCharacter');
+bind('ownerInfo','previewOwner');
+
+document.getElementById('imageUpload')
+.addEventListener('change', function(e){
+
+const file = e.target.files[0];
+
+if(!file) return;
+
+const reader = new FileReader();
+
+reader.onload = function(event){
+document.getElementById('previewImage').src = event.target.result;
+}
+
+reader.readAsDataURL(file);
+
+});
+
+async function downloadCard(){
+
+const card = document.getElementById('card');
+
+const canvas = await html2canvas(card,{
+scale:2
+});
+
+const link = document.createElement('a');
+
+link.download = 'character-card.png';
+
+link.href = canvas.toDataURL();
+
+link.click();
+
+}
+
+</script>
+
+</body>
+</html>
