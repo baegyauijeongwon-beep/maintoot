@@ -49,7 +49,7 @@ body {
     letter-spacing: 1px;
 }
 
-/* 💡 select 태그 추가 및 화살표 디자인 적용 */
+/* select 태그 추가 및 화살표 디자인 적용 */
 input, textarea, select {
     width: 100%;
     margin-bottom: 12px;
@@ -73,7 +73,7 @@ select {
 }
 
 select:invalid {
-    color: #888; /* placeholder 색상처럼 보이게 */
+    color: #888;
 }
 
 select option {
@@ -201,6 +201,7 @@ button:hover {
     color: #eee;
 }
 
+/* 모바일 화면 대응 */
 @media(max-width: 1200px) {
     .wrapper { grid-template-columns: 1fr; }
     .canvas-container { padding: 10px; }
@@ -286,19 +287,20 @@ button:hover {
 </div>
 
 <script>
+// 💡 스페이스바를 누를 때 텍스트가 안 보이는 현상을 수정한 버전입니다!
 function bind(inputId, targetId, suffix = '', defaultVal = ''){
     const inputEl = document.getElementById(inputId);
     const targetEl = document.getElementById(targetId);
 
     inputEl.addEventListener('input', e => {
-        let val = e.target.value.trim();
+        let val = e.target.value; // 입력값을 그대로 가져와서 띄어쓰기를 살림
         
-        if(!val) {
+        if(val.trim() === '') {
             targetEl.textContent = defaultVal;
             return;
         }
         
-        if(suffix && !val.endsWith(suffix)) {
+        if(suffix && !val.trim().endsWith(suffix)) {
             val += suffix;
         }
         
@@ -312,17 +314,15 @@ bind('korNameInput', 'previewKorName', '', '캐릭터 이름');
 bind('ageInput', 'previewAge', '세', '00세');       
 bind('heightInput', 'previewHeight', 'cm', '000cm'); 
 
-// 💡 기숙사 전용 스크립트 (슬래쉬 숨김 처리 로직)
+// 기숙사 전용 스크립트 (슬래쉬 숨김 처리 로직)
 document.getElementById('houseInput').addEventListener('change', function(e) {
     const val = e.target.value;
     const houseArea = document.getElementById('houseArea');
     const previewHouse = document.getElementById('previewHouse');
 
     if(val === '기숙사 배정 전') {
-        // '기숙사 배정 전' 선택 시 슬래쉬(/)와 텍스트를 완전히 숨깁니다.
         houseArea.style.display = 'none';
     } else {
-        // 다른 기숙사를 선택하면 다시 보이게 하고 텍스트를 업데이트합니다.
         houseArea.style.display = 'inline';
         previewHouse.textContent = val;
     }
@@ -335,13 +335,30 @@ bind('keyword3', 'tag3', '', '키워드3');
 bind('characterInfo', 'previewCharacter', '', '캐릭터의 상세한 정보를 입력해주세요.');
 bind('ownerInfo', 'previewOwner', '', '오너 정보를 입력해주세요.');
 
+// 💡 모바일 환경에서도 강제로 PC버전(가로형)으로 저장되도록 하는 캡처 로직
 async function downloadCard(){
     const captureArea = document.getElementById('captureArea');
+    
     const canvas = await html2canvas(captureArea, {
         scale: 2,
         backgroundColor: null, 
-        useCORS: true
+        useCORS: true,
+        windowWidth: 1400, // 캡처할 때 브라우저 가로 크기를 1400px(PC 해상도)로 속임
+        onclone: function(clonedDoc) {
+            // 모바일 CSS가 덮어씌워지는 것을 방지하고 강제로 가로폭과 2단 그리드를 유지
+            const clonedCard = clonedDoc.getElementById('card');
+            const clonedBodySection = clonedDoc.querySelector('.body-section');
+            
+            if(clonedCard) {
+                clonedCard.style.width = '850px';
+            }
+            if(clonedBodySection) {
+                clonedBodySection.style.gridTemplateColumns = '1fr 1fr';
+                clonedBodySection.style.gap = '50px';
+            }
+        }
     });
+    
     const link = document.createElement('a');
     link.download = 'character-card.png';
     link.href = canvas.toDataURL();
