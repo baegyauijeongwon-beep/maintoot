@@ -4,275 +4,253 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Character Card Maker</title>
+<title>Character Card Maker (가로형)</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;700&display=swap" rel="stylesheet">
-
 <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 
 <style>
-
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-body{
-background:#080808;
-color:white;
-font-family:'Noto Serif KR', serif;
-padding:40px;
+body {
+    background: #080808;
+    color: white;
+    font-family: 'Noto Serif KR', serif;
+    padding: 40px;
 }
 
-.wrapper{
-max-width:1400px;
-margin:auto;
-display:grid;
-grid-template-columns:400px 1fr;
-gap:40px;
+.wrapper {
+    max-width: 1500px;
+    margin: auto;
+    display: grid;
+    grid-template-columns: 350px 1fr;
+    gap: 40px;
 }
 
-.panel{
-background:#111;
-padding:25px;
-border:1px solid rgba(255,255,255,.1);
+/* 입력 패널 디자인 */
+.panel {
+    background: #111;
+    padding: 25px;
+    border: 1px solid rgba(255,255,255,.1);
+    height: fit-content;
 }
 
-.panel h2{
-margin-bottom:20px;
-font-size:18px;
+.panel h2 {
+    margin-bottom: 20px;
+    font-size: 18px;
 }
 
-input,
-textarea{
-width:100%;
-margin-bottom:12px;
-padding:10px;
-background:#1a1a1a;
-border:1px solid rgba(255,255,255,.1);
-color:white;
-font-family:inherit;
+input, textarea {
+    width: 100%;
+    margin-bottom: 12px;
+    padding: 10px;
+    background: #1a1a1a;
+    border: 1px solid rgba(255,255,255,.1);
+    color: white;
+    font-family: inherit;
 }
 
-textarea{
-resize:vertical;
-min-height:120px;
+textarea {
+    resize: vertical;
+    min-height: 120px;
 }
 
-button{
-width:100%;
-padding:12px;
-background:#222;
-color:white;
-border:none;
-cursor:pointer;
-margin-top:10px;
+button {
+    width: 100%;
+    padding: 12px;
+    background: #333;
+    color: white;
+    border: none;
+    cursor: pointer;
+    margin-top: 10px;
+    font-weight: bold;
 }
 
-button:hover{
-background:#333;
+button:hover {
+    background: #555;
 }
 
-.card{
-background:#0d0d0d;
-border:1px solid rgba(255,255,255,.15);
-overflow:hidden;
+/* 가로형 카드 본체 */
+.card {
+    background: #0d0d0d;
+    border: 1px solid rgba(255,255,255,.15);
+    display: flex; /* 가로 배치를 위한 flex */
+    width: 1000px; /* 카드 가로 길이 고정 */
+    min-height: 550px;
 }
 
-.top{
-display:grid;
-grid-template-columns:350px 1fr;
+/* 왼쪽 이미지 영역 */
+.portrait {
+    width: 380px;
+    height: auto;
+    object-fit: cover;
+    background: #111;
+    border-right: 1px solid rgba(255,255,255,.08);
 }
 
-.portrait{
-width:100%;
-height:600px;
-object-fit:cover;
-background:#111;
+/* 오른쪽 정보 전체 영역 */
+.content-area {
+    flex: 1;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
 }
 
-.info{
-padding:35px;
+/* 상단 헤더 (이름, 서브정보) */
+.header-section {
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(255,255,255,.08);
 }
 
-.name{
-font-size:42px;
-margin-bottom:30px;
+.name {
+    font-size: 46px;
+    font-weight: 700;
+    margin-bottom: 15px;
 }
 
-.infoRow{
-margin-bottom:18px;
+.sub-info {
+    font-size: 18px;
+    color: #ccc;
+    letter-spacing: 1px;
 }
 
-.label{
-font-size:12px;
-opacity:.6;
-letter-spacing:2px;
-margin-bottom:5px;
+/* 하단 2단 분할 영역 (캐릭터 정보 | 오너 정보) */
+.body-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* 반반 분할 */
+    gap: 40px;
+    flex: 1;
 }
 
-.value{
-font-size:18px;
+/* 각 섹션 공통 */
+.sectionTitle {
+    font-size: 14px;
+    opacity: 0.6;
+    letter-spacing: 2px;
+    margin-bottom: 15px;
 }
 
-.tags{
-display:flex;
-gap:10px;
-flex-wrap:wrap;
+.sectionText {
+    line-height: 1.8;
+    font-size: 15px;
+    white-space: pre-wrap;
+    color: #ddd;
+    margin-bottom: 30px;
 }
 
-.tag{
-border:1px solid rgba(255,255,255,.2);
-padding:6px 12px;
-font-size:14px;
+/* 성격 키워드 태그 */
+.tags {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: auto; /* 아래쪽으로 밀어내기 */
 }
 
-.section{
-padding:35px;
-border-top:1px solid rgba(255,255,255,.08);
+.tag {
+    background: rgba(255,255,255,.05);
+    border: 1px solid rgba(255,255,255,.2);
+    padding: 6px 14px;
+    font-size: 14px;
 }
 
-.sectionTitle{
-font-size:20px;
-margin-bottom:15px;
-letter-spacing:2px;
+/* 모바일 화면 대응 */
+@media(max-width: 1200px) {
+    .wrapper { grid-template-columns: 1fr; }
+    .card { width: 100%; flex-direction: column; }
+    .portrait { width: 100%; height: 400px; }
+    .body-section { grid-template-columns: 1fr; }
 }
-
-.sectionText{
-line-height:1.8;
-white-space:pre-wrap;
-}
-
-@media(max-width:900px){
-
-.wrapper{
-grid-template-columns:1fr;
-}
-
-.top{
-grid-template-columns:1fr;
-}
-
-.portrait{
-height:500px;
-}
-
-}
-
 </style>
 </head>
-
 <body>
 
 <div class="wrapper">
 
-<div class="panel">
+    <!-- 왼쪽 입력 패널 -->
+    <div class="panel">
+        <h2>캐릭터 입력</h2>
+        
+        <input type="file" id="imageUpload">
+        
+        <input id="nameInput" placeholder="이름 (예: 해리 포터)">
+        <input id="ageInput" placeholder="나이 (예: 15세)">
+        <input id="heightInput" placeholder="키 (예: 170cm)">
+        <input id="houseInput" placeholder="기숙사 (예: 그리핀도르)">
+        
+        <input id="keyword1" placeholder="성격 키워드 1">
+        <input id="keyword2" placeholder="성격 키워드 2">
+        <input id="keyword3" placeholder="성격 키워드 3">
+        
+        <textarea id="characterInfo" placeholder="캐릭터 정보 및 서사"></textarea>
+        <textarea id="ownerInfo" placeholder="오너 정보 및 한마디"></textarea>
+        
+        <button onclick="downloadCard()">PNG 저장</button>
+    </div>
 
-<h2>캐릭터 입력</h2>
-
-<input type="file" id="imageUpload">
-
-<input id="nameInput" placeholder="이름">
-<input id="heightInput" placeholder="키">
-<input id="houseInput" placeholder="기숙사">
-
-<input id="keyword1" placeholder="성격 키워드 1">
-<input id="keyword2" placeholder="성격 키워드 2">
-<input id="keyword3" placeholder="성격 키워드 3">
-
-<textarea id="characterInfo" placeholder="캐릭터 정보"></textarea>
-
-<textarea id="ownerInfo" placeholder="오너 정보"></textarea>
-
-<button onclick="downloadCard()">
-PNG 저장
-</button>
-
-</div>
-
-<div id="card" class="card">
-
-<div class="top">
-
-<img
-id="previewImage"
-class="portrait"
-src="https://placehold.co/800x1200/111111/FFFFFF?text=Character">
-
-<div class="info">
-
-<div id="previewName" class="name">
-캐릭터 이름
-</div>
-
-<div class="infoRow">
-<div class="label">HEIGHT</div>
-<div id="previewHeight" class="value">170cm</div>
-</div>
-
-<div class="infoRow">
-<div class="label">HOUSE</div>
-<div id="previewHouse" class="value">기숙사</div>
-</div>
-
-<div class="infoRow">
-
-<div class="label">PERSONALITY</div>
-
-<div class="tags">
-
-<div id="tag1" class="tag">키워드</div>
-<div id="tag2" class="tag">키워드</div>
-<div id="tag3" class="tag">키워드</div>
-
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-<div class="section">
-
-<div class="sectionTitle">
-CHARACTER
-</div>
-
-<div id="previewCharacter" class="sectionText">
-캐릭터 설명
-</div>
-
-</div>
-
-<div class="section">
-
-<div class="sectionTitle">
-OWNER
-</div>
-
-<div id="previewOwner" class="sectionText">
-오너 정보
-</div>
-
-</div>
-
-</div>
+    <!-- 오른쪽 카드 미리보기 -->
+    <div id="card" class="card">
+        
+        <!-- 카드 왼쪽: 이미지 -->
+        <img id="previewImage" class="portrait" src="https://placehold.co/800x1200/111111/FFFFFF?text=Character">
+        
+        <!-- 카드 오른쪽: 텍스트 정보 -->
+        <div class="content-area">
+            
+            <!-- 이름 및 나이/키/기숙사 -->
+            <div class="header-section">
+                <div id="previewName" class="name">캐릭터 이름</div>
+                <div class="sub-info">
+                    <span id="previewAge">00세</span> / 
+                    <span id="previewHeight">000cm</span> / 
+                    <span id="previewHouse">기숙사</span>
+                </div>
+            </div>
+            
+            <!-- 하단 정보 (캐릭터 정보 ㅣ 오너 정보) -->
+            <div class="body-section">
+                
+                <!-- 하단 왼쪽: 캐릭터 정보 & 성격 키워드 -->
+                <div style="display:flex; flex-direction:column;">
+                    <div class="sectionTitle">CHARACTER INFO</div>
+                    <div id="previewCharacter" class="sectionText">캐릭터의 상세한 정보를 입력해주세요.</div>
+                    
+                    <div class="sectionTitle" style="margin-top:auto;">PERSONALITY</div>
+                    <div class="tags">
+                        <div id="tag1" class="tag">키워드1</div>
+                        <div id="tag2" class="tag">키워드2</div>
+                        <div id="tag3" class="tag">키워드3</div>
+                    </div>
+                </div>
+                
+                <!-- 하단 오른쪽: 오너 정보 -->
+                <div>
+                    <div class="sectionTitle">OWNER INFO</div>
+                    <div id="previewOwner" class="sectionText">오너 정보를 입력해주세요.</div>
+                </div>
+                
+            </div>
+            
+        </div>
+    </div>
 
 </div>
 
 <script>
-
+// 실시간 데이터 바인딩 함수
 function bind(inputId, targetId){
-
-document.getElementById(inputId).addEventListener('input', e => {
-document.getElementById(targetId).textContent = e.target.value;
-});
-
+    document.getElementById(inputId).addEventListener('input', e => {
+        document.getElementById(targetId).textContent = e.target.value;
+    });
 }
 
+// 항목별 바인딩 실행
 bind('nameInput','previewName');
+bind('ageInput','previewAge');   // 나이 추가됨!
 bind('heightInput','previewHeight');
 bind('houseInput','previewHouse');
 
@@ -283,41 +261,29 @@ bind('keyword3','tag3');
 bind('characterInfo','previewCharacter');
 bind('ownerInfo','previewOwner');
 
-document.getElementById('imageUpload')
-.addEventListener('change', function(e){
-
-const file = e.target.files[0];
-
-if(!file) return;
-
-const reader = new FileReader();
-
-reader.onload = function(event){
-document.getElementById('previewImage').src = event.target.result;
-}
-
-reader.readAsDataURL(file);
-
+// 이미지 업로드 미리보기
+document.getElementById('imageUpload').addEventListener('change', function(e){
+    const file = e.target.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = function(event){
+        document.getElementById('previewImage').src = event.target.result;
+    }
+    reader.readAsDataURL(file);
 });
 
+// 이미지 다운로드 함수 (화질 2배율 적용)
 async function downloadCard(){
-
-const card = document.getElementById('card');
-
-const canvas = await html2canvas(card,{
-scale:2
-});
-
-const link = document.createElement('a');
-
-link.download = 'character-card.png';
-
-link.href = canvas.toDataURL();
-
-link.click();
-
+    const card = document.getElementById('card');
+    const canvas = await html2canvas(card, {
+        scale: 2,
+        backgroundColor: '#0d0d0d'
+    });
+    const link = document.createElement('a');
+    link.download = 'character-card-horizontal.png';
+    link.href = canvas.toDataURL();
+    link.click();
 }
-
 </script>
 
 </body>
