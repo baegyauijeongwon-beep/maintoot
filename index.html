@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Character Card Maker (가로형)</title>
+<title>Character Card Maker (텍스트형)</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;700&display=swap" rel="stylesheet">
 <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
@@ -24,7 +24,7 @@ body {
 }
 
 .wrapper {
-    max-width: 1500px;
+    max-width: 1300px;
     margin: auto;
     display: grid;
     grid-template-columns: 350px 1fr;
@@ -74,30 +74,22 @@ button:hover {
     background: #555;
 }
 
-/* 가로형 카드 본체 */
+/* 가로형 카드 본체 (이미지 제거) */
 .card {
     background: #0d0d0d;
     border: 1px solid rgba(255,255,255,.15);
-    display: flex; /* 가로 배치를 위한 flex */
-    width: 1000px; /* 카드 가로 길이 고정 */
-    min-height: 550px;
-}
-
-/* 왼쪽 이미지 영역 */
-.portrait {
-    width: 380px;
-    height: auto;
-    object-fit: cover;
-    background: #111;
-    border-right: 1px solid rgba(255,255,255,.08);
-}
-
-/* 오른쪽 정보 전체 영역 */
-.content-area {
-    flex: 1;
-    padding: 40px;
+    width: 850px; /* 텍스트형에 맞게 가로폭 조정 */
+    min-height: 450px;
     display: flex;
     flex-direction: column;
+}
+
+/* 정보 전체 영역 */
+.content-area {
+    padding: 45px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
 }
 
 /* 상단 헤더 (이름, 서브정보) */
@@ -123,7 +115,7 @@ button:hover {
 .body-section {
     display: grid;
     grid-template-columns: 1fr 1fr; /* 반반 분할 */
-    gap: 40px;
+    gap: 50px;
     flex: 1;
 }
 
@@ -161,9 +153,8 @@ button:hover {
 /* 모바일 화면 대응 */
 @media(max-width: 1200px) {
     .wrapper { grid-template-columns: 1fr; }
-    .card { width: 100%; flex-direction: column; }
-    .portrait { width: 100%; height: 400px; }
-    .body-section { grid-template-columns: 1fr; }
+    .card { width: 100%; }
+    .body-section { grid-template-columns: 1fr; gap: 30px; }
 }
 </style>
 </head>
@@ -171,11 +162,8 @@ button:hover {
 
 <div class="wrapper">
 
-    <!-- 왼쪽 입력 패널 -->
     <div class="panel">
         <h2>캐릭터 입력</h2>
-        
-        <input type="file" id="imageUpload">
         
         <input id="nameInput" placeholder="이름 (예: 해리 포터)">
         <input id="ageInput" placeholder="나이 (예: 15세)">
@@ -192,16 +180,10 @@ button:hover {
         <button onclick="downloadCard()">PNG 저장</button>
     </div>
 
-    <!-- 오른쪽 카드 미리보기 -->
     <div id="card" class="card">
         
-        <!-- 카드 왼쪽: 이미지 -->
-        <img id="previewImage" class="portrait" src="https://placehold.co/800x1200/111111/FFFFFF?text=Character">
-        
-        <!-- 카드 오른쪽: 텍스트 정보 -->
         <div class="content-area">
             
-            <!-- 이름 및 나이/키/기숙사 -->
             <div class="header-section">
                 <div id="previewName" class="name">캐릭터 이름</div>
                 <div class="sub-info">
@@ -211,10 +193,8 @@ button:hover {
                 </div>
             </div>
             
-            <!-- 하단 정보 (캐릭터 정보 ㅣ 오너 정보) -->
             <div class="body-section">
                 
-                <!-- 하단 왼쪽: 캐릭터 정보 & 성격 키워드 -->
                 <div style="display:flex; flex-direction:column;">
                     <div class="sectionTitle">CHARACTER INFO</div>
                     <div id="previewCharacter" class="sectionText">캐릭터의 상세한 정보를 입력해주세요.</div>
@@ -227,7 +207,6 @@ button:hover {
                     </div>
                 </div>
                 
-                <!-- 하단 오른쪽: 오너 정보 -->
                 <div>
                     <div class="sectionTitle">OWNER INFO</div>
                     <div id="previewOwner" class="sectionText">오너 정보를 입력해주세요.</div>
@@ -250,7 +229,7 @@ function bind(inputId, targetId){
 
 // 항목별 바인딩 실행
 bind('nameInput','previewName');
-bind('ageInput','previewAge');   // 나이 추가됨!
+bind('ageInput','previewAge');
 bind('heightInput','previewHeight');
 bind('houseInput','previewHouse');
 
@@ -261,16 +240,7 @@ bind('keyword3','tag3');
 bind('characterInfo','previewCharacter');
 bind('ownerInfo','previewOwner');
 
-// 이미지 업로드 미리보기
-document.getElementById('imageUpload').addEventListener('change', function(e){
-    const file = e.target.files[0];
-    if(!file) return;
-    const reader = new FileReader();
-    reader.onload = function(event){
-        document.getElementById('previewImage').src = event.target.result;
-    }
-    reader.readAsDataURL(file);
-});
+// 이미지 업로드 스크립트 삭제됨
 
 // 이미지 다운로드 함수 (화질 2배율 적용)
 async function downloadCard(){
@@ -280,7 +250,7 @@ async function downloadCard(){
         backgroundColor: '#0d0d0d'
     });
     const link = document.createElement('a');
-    link.download = 'character-card-horizontal.png';
+    link.download = 'character-card.png';
     link.href = canvas.toDataURL();
     link.click();
 }
