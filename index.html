@@ -17,7 +17,7 @@
 }
 
 body {
-    background: #ffffff; /* 완전히 깨끗한 흰색 배경 */
+    background: #ffffff; 
     color: #222;
     font-family: 'Noto Serif KR', serif;
     padding: 40px;
@@ -32,7 +32,7 @@ body {
     align-items: center;
 }
 
-/* 입력 패널 디자인 (에디터 느낌을 주기 위해 다크 그레이 톤 유지) */
+/* 입력 패널 디자인 */
 .panel {
     background: #111;
     padding: 25px;
@@ -82,7 +82,7 @@ button:hover {
     background: #555;
 }
 
-/* [중요] 그림자가 잘리지 않도록 방어 패딩을 준 투명 컨테이너 */
+/* 그림자 보호 투명 컨테이너 */
 .canvas-container {
     padding: 40px;
     background: transparent;
@@ -93,16 +93,16 @@ button:hover {
 
 /* 가로형 카드 본체 */
 .card {
-    background: #0d0d0d; /* 카드는 대비감을 위해 시크한 다크 그레이 유지 */
+    background: #0d0d0d; 
     color: white;
     width: 850px; 
     min-height: 450px;
     display: flex;
     flex-direction: column;
     
-    border-radius: 10px; /* 요청하신 모서리 페더 10(R10) 적용 */
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35); /* 밑으로 은은하게 깔리는 고급스러운 그림자 */
-    overflow: hidden; /* 내부 요소가 둥근 모서리 밖으로 튀어나가지 않게 커팅 */
+    border-radius: 10px; 
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35); 
+    overflow: hidden; 
     border: 1px solid rgba(255,255,255,0.03);
 }
 
@@ -121,10 +121,25 @@ button:hover {
     border-bottom: 1px solid rgba(255,255,255,.08);
 }
 
+/* 💡 추가된 이름 컨테이너 (영문/한글 분리) */
+.name-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 4px; /* 영문과 한글 사이의 간격 */
+    margin-bottom: 15px;
+}
+
+.eng-name {
+    font-size: 15px;
+    color: #888; /* 한글 이름보다 약간 흐리게 */
+    letter-spacing: 3px; /* 영문은 자간을 넓게 주면 더 고급스럽습니다 */
+    font-weight: 400;
+}
+
 .name {
     font-size: 46px;
     font-weight: 700;
-    margin-bottom: 15px;
+    line-height: 1.1;
 }
 
 .sub-info {
@@ -133,7 +148,7 @@ button:hover {
     letter-spacing: 1px;
 }
 
-/* 하단 2단 분할 영역 (캐릭터 정보 | 오너 정보) */
+/* 하단 2단 분할 영역 */
 .body-section {
     display: grid;
     grid-template-columns: 1fr 1fr; 
@@ -141,7 +156,6 @@ button:hover {
     flex: 1;
 }
 
-/* 각 섹션 공통 */
 .sectionTitle {
     font-size: 14px;
     opacity: 0.6;
@@ -156,7 +170,6 @@ button:hover {
     color: #ddd;
 }
 
-/* 성격 키워드 태그 스타일 */
 .tags {
     display: flex;
     gap: 8px;
@@ -185,10 +198,14 @@ button:hover {
 
 <div class="wrapper">
 
+    <!-- 왼쪽 입력 패널 -->
     <div class="panel">
         <h2>캐릭터 입력</h2>
         
-        <input id="nameInput" placeholder="이름 (예: 해리 포터)">
+        <!-- 💡 이름 입력칸 분리 -->
+        <input id="engNameInput" placeholder="영문 이름 (예: Harry Potter)">
+        <input id="korNameInput" placeholder="한글 이름 (예: 해리 포터)">
+        
         <input id="ageInput" placeholder="나이 (숫자만 입력해도 '세'가 붙습니다)">
         <input id="heightInput" placeholder="키 (숫자만 입력해도 'cm'가 붙습니다)">
         <input id="houseInput" placeholder="기숙사 (예: 그리핀도르)">
@@ -203,13 +220,19 @@ button:hover {
         <button onclick="downloadCard()">PNG 저장</button>
     </div>
 
+    <!-- 오른쪽 카드 미리보기 -->
     <div id="captureArea" class="canvas-container">
         <div id="card" class="card">
             
             <div class="content-area">
                 
                 <div class="header-section">
-                    <div id="previewName" class="name">캐릭터 이름</div>
+                    <!-- 💡 이름 출력부 (영문 위, 한글 아래) -->
+                    <div class="name-wrapper">
+                        <div id="previewEngName" class="eng-name">ENGLISH NAME</div>
+                        <div id="previewKorName" class="name">캐릭터 이름</div>
+                    </div>
+                    
                     <div class="sub-info">
                         <span id="previewAge">00세</span> / 
                         <span id="previewHeight">000cm</span> / 
@@ -245,7 +268,6 @@ button:hover {
 </div>
 
 <script>
-// 스마트 데이터 바인딩 함수
 function bind(inputId, targetId, suffix = '', defaultVal = ''){
     const inputEl = document.getElementById(inputId);
     const targetEl = document.getElementById(targetId);
@@ -266,8 +288,10 @@ function bind(inputId, targetId, suffix = '', defaultVal = ''){
     });
 }
 
-// 항목별 바인딩 실행
-bind('nameInput', 'previewName', '', '캐릭터 이름');
+// 💡 항목별 바인딩 실행 (영문/한글 분리)
+bind('engNameInput', 'previewEngName', '', 'ENGLISH NAME');
+bind('korNameInput', 'previewKorName', '', '캐릭터 이름');
+
 bind('ageInput', 'previewAge', '세', '00세');       
 bind('heightInput', 'previewHeight', 'cm', '000cm'); 
 bind('houseInput', 'previewHouse', '', '기숙사');
@@ -279,16 +303,16 @@ bind('keyword3', 'tag3', '', '키워드3');
 bind('characterInfo', 'previewCharacter', '', '캐릭터의 상세한 정보를 입력해주세요.');
 bind('ownerInfo', 'previewOwner', '', '오너 정보를 입력해주세요.');
 
-// 이미지 다운로드 함수 (그림자&라운딩 보존 추출 버전)
+// 이미지 다운로드 함수
 async function downloadCard(){
-    const captureArea = document.getElementById('captureArea'); // 감싸고 있는 투명 영역을 캡처
+    const captureArea = document.getElementById('captureArea');
     const canvas = await html2canvas(captureArea, {
         scale: 2,
-        backgroundColor: null, // 투명(알파채널) 배경으로 저장하여 그림자가 깔끔하게 뽑힘
+        backgroundColor: null, 
         useCORS: true
     });
     const link = document.createElement('a');
-    link.download = 'character-card-floating.png';
+    link.download = 'character-card-name.png';
     link.href = canvas.toDataURL();
     link.click();
 }
