@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Character Card Maker (텍스트 가로형 V2)</title>
+<title>Character Card Maker (라이트 테마 & 플로팅 카드)</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;700&display=swap" rel="stylesheet">
 <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
@@ -17,31 +17,36 @@
 }
 
 body {
-    background: #080808;
-    color: white;
+    background: #ffffff; /* 완전히 깨끗한 흰색 배경 */
+    color: #222;
     font-family: 'Noto Serif KR', serif;
     padding: 40px;
 }
 
 .wrapper {
-    max-width: 1300px;
+    max-width: 1400px;
     margin: auto;
     display: grid;
     grid-template-columns: 350px 1fr;
     gap: 40px;
+    align-items: center;
 }
 
-/* 입력 패널 디자인 */
+/* 입력 패널 디자인 (에디터 느낌을 주기 위해 다크 그레이 톤 유지) */
 .panel {
     background: #111;
     padding: 25px;
-    border: 1px solid rgba(255,255,255,.1);
+    border: 1px solid rgba(0,0,0,.1);
+    border-radius: 12px;
+    color: white;
     height: fit-content;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
 }
 
 .panel h2 {
     margin-bottom: 20px;
     font-size: 18px;
+    letter-spacing: 1px;
 }
 
 input, textarea {
@@ -52,6 +57,7 @@ input, textarea {
     border: 1px solid rgba(255,255,255,.1);
     color: white;
     font-family: inherit;
+    border-radius: 6px;
 }
 
 textarea {
@@ -68,20 +74,36 @@ button {
     cursor: pointer;
     margin-top: 10px;
     font-weight: bold;
+    border-radius: 6px;
+    transition: background 0.2s;
 }
 
 button:hover {
     background: #555;
 }
 
+/* [중요] 그림자가 잘리지 않도록 방어 패딩을 준 투명 컨테이너 */
+.canvas-container {
+    padding: 40px;
+    background: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 /* 가로형 카드 본체 */
 .card {
-    background: #0d0d0d;
-    border: 1px solid rgba(255,255,255,.15);
+    background: #0d0d0d; /* 카드는 대비감을 위해 시크한 다크 그레이 유지 */
+    color: white;
     width: 850px; 
     min-height: 450px;
     display: flex;
     flex-direction: column;
+    
+    border-radius: 10px; /* 요청하신 모서리 페더 10(R10) 적용 */
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35); /* 밑으로 은은하게 깔리는 고급스러운 그림자 */
+    overflow: hidden; /* 내부 요소가 둥근 모서리 밖으로 튀어나가지 않게 커팅 */
+    border: 1px solid rgba(255,255,255,0.03);
 }
 
 /* 정보 전체 영역 */
@@ -139,7 +161,7 @@ button:hover {
     display: flex;
     gap: 8px;
     flex-wrap: wrap;
-    margin-bottom: 20px; /* 캐릭터 설명 텍스트와의 간격 */
+    margin-bottom: 20px;
 }
 
 .tag {
@@ -153,6 +175,7 @@ button:hover {
 /* 모바일 화면 대응 */
 @media(max-width: 1200px) {
     .wrapper { grid-template-columns: 1fr; }
+    .canvas-container { padding: 10px; }
     .card { width: 100%; }
     .body-section { grid-template-columns: 1fr; gap: 30px; }
 }
@@ -180,53 +203,49 @@ button:hover {
         <button onclick="downloadCard()">PNG 저장</button>
     </div>
 
-    <div id="card" class="card">
-        
-        <div class="content-area">
+    <div id="captureArea" class="canvas-container">
+        <div id="card" class="card">
             
-            <div class="header-section">
-                <div id="previewName" class="name">캐릭터 이름</div>
-                <div class="sub-info">
-                    <span id="previewAge">00세</span> / 
-                    <span id="previewHeight">000cm</span> / 
-                    <span id="previewHouse">기숙사</span>
-                </div>
-            </div>
-            
-            <div class="body-section">
+            <div class="content-area">
                 
-                <div>
-                    <div class="sectionTitle">CHARACTER INFO</div>
+                <div class="header-section">
+                    <div id="previewName" class="name">캐릭터 이름</div>
+                    <div class="sub-info">
+                        <span id="previewAge">00세</span> / 
+                        <span id="previewHeight">000cm</span> / 
+                        <span id="previewHouse">기숙사</span>
+                    </div>
+                </div>
+                
+                <div class="body-section">
                     
-                    <div class="tags">
-                        <div id="tag1" class="tag">키워드1</div>
-                        <div id="tag2" class="tag">키워드2</div>
-                        <div id="tag3" class="tag">키워드3</div>
+                    <div>
+                        <div class="sectionTitle">CHARACTER INFO</div>
+                        
+                        <div class="tags">
+                            <div id="tag1" class="tag">키워드1</div>
+                            <div id="tag2" class="tag">키워드2</div>
+                            <div id="tag3" class="tag">키워드3</div>
+                        </div>
+                        
+                        <div id="previewCharacter" class="sectionText">캐릭터의 상세한 정보를 입력해주세요.</div>
                     </div>
                     
-                    <div id="previewCharacter" class="sectionText">캐릭터의 상세한 정보를 입력해주세요.</div>
-                </div>
-                
-                <div>
-                    <div class="sectionTitle">OWNER INFO</div>
-                    <div id="previewOwner" class="sectionText">오너 정보를 입력해주세요.</div>
+                    <div>
+                        <div class="sectionTitle">OWNER INFO</div>
+                        <div id="previewOwner" class="sectionText">오너 정보를 입력해주세요.</div>
+                    </div>
+                    
                 </div>
                 
             </div>
-            
         </div>
     </div>
 
 </div>
 
 <script>
-/**
- * 스마트 데이터 바인딩 함수
- * @param inputId 입력 창 ID
- * @param targetId 출력 영역 ID
- * @param suffix 자동으로 붙일 단위 ('세', 'cm' 등)
- * @param defaultVal 값이 없을 때 보여줄 기본 텍스트
- */
+// 스마트 데이터 바인딩 함수
 function bind(inputId, targetId, suffix = '', defaultVal = ''){
     const inputEl = document.getElementById(inputId);
     const targetEl = document.getElementById(targetId);
@@ -234,13 +253,11 @@ function bind(inputId, targetId, suffix = '', defaultVal = ''){
     inputEl.addEventListener('input', e => {
         let val = e.target.value.trim();
         
-        // 입력값이 비어있으면 기본값 출력
         if(!val) {
             targetEl.textContent = defaultVal;
             return;
         }
         
-        // 단위가 설정되어 있고, 입력값 끝에 해당 단위가 없을 때만 붙여줌
         if(suffix && !val.endsWith(suffix)) {
             val += suffix;
         }
@@ -249,10 +266,10 @@ function bind(inputId, targetId, suffix = '', defaultVal = ''){
     });
 }
 
-// 항목별 바인딩 실행 (단위 및 기본값 세팅)
+// 항목별 바인딩 실행
 bind('nameInput', 'previewName', '', '캐릭터 이름');
-bind('ageInput', 'previewAge', '세', '00세');       // '세' 자동 완성
-bind('heightInput', 'previewHeight', 'cm', '000cm'); // 'cm' 자동 완성
+bind('ageInput', 'previewAge', '세', '00세');       
+bind('heightInput', 'previewHeight', 'cm', '000cm'); 
 bind('houseInput', 'previewHouse', '', '기숙사');
 
 bind('keyword1', 'tag1', '', '키워드1');
@@ -262,15 +279,16 @@ bind('keyword3', 'tag3', '', '키워드3');
 bind('characterInfo', 'previewCharacter', '', '캐릭터의 상세한 정보를 입력해주세요.');
 bind('ownerInfo', 'previewOwner', '', '오너 정보를 입력해주세요.');
 
-// 이미지 다운로드 함수
+// 이미지 다운로드 함수 (그림자&라운딩 보존 추출 버전)
 async function downloadCard(){
-    const card = document.getElementById('card');
-    const canvas = await html2canvas(card, {
+    const captureArea = document.getElementById('captureArea'); // 감싸고 있는 투명 영역을 캡처
+    const canvas = await html2canvas(captureArea, {
         scale: 2,
-        backgroundColor: '#0d0d0d'
+        backgroundColor: null, // 투명(알파채널) 배경으로 저장하여 그림자가 깔끔하게 뽑힘
+        useCORS: true
     });
     const link = document.createElement('a');
-    link.download = 'character-card.png';
+    link.download = 'character-card-floating.png';
     link.href = canvas.toDataURL();
     link.click();
 }
