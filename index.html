@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>백야의 정원 메인 툿 메이커</title>
+<title>Character Card Maker (해리포터 기숙사 선택형)</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;700&display=swap" rel="stylesheet">
 <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
@@ -49,7 +49,8 @@ body {
     letter-spacing: 1px;
 }
 
-input, textarea {
+/* 💡 select 태그 추가 및 화살표 디자인 적용 */
+input, textarea, select {
     width: 100%;
     margin-bottom: 12px;
     padding: 10px;
@@ -58,6 +59,26 @@ input, textarea {
     color: white;
     font-family: inherit;
     border-radius: 6px;
+}
+
+/* 셀렉트 박스 화살표 커스텀 (옵션) */
+select {
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 15px;
+    padding-right: 30px;
+}
+
+select:invalid {
+    color: #888; /* placeholder 색상처럼 보이게 */
+}
+
+select option {
+    color: white;
+    background: #222;
 }
 
 textarea {
@@ -82,7 +103,6 @@ button:hover {
     background: #555;
 }
 
-/* 그림자 보호 투명 컨테이너 */
 .canvas-container {
     padding: 40px;
     background: transparent;
@@ -106,7 +126,6 @@ button:hover {
     border: 1px solid rgba(255,255,255,0.03);
 }
 
-/* 정보 전체 영역 */
 .content-area {
     padding: 45px;
     display: flex;
@@ -114,25 +133,23 @@ button:hover {
     flex: 1;
 }
 
-/* 상단 헤더 (이름, 서브정보) */
 .header-section {
     margin-bottom: 30px;
     padding-bottom: 20px;
     border-bottom: 1px solid rgba(255,255,255,.08);
 }
 
-/* 💡 추가된 이름 컨테이너 (영문/한글 분리) */
 .name-wrapper {
     display: flex;
     flex-direction: column;
-    gap: 4px; /* 영문과 한글 사이의 간격 */
+    gap: 4px;
     margin-bottom: 15px;
 }
 
 .eng-name {
     font-size: 15px;
-    color: #888; /* 한글 이름보다 약간 흐리게 */
-    letter-spacing: 3px; /* 영문은 자간을 넓게 주면 더 고급스럽습니다 */
+    color: #888;
+    letter-spacing: 3px;
     font-weight: 400;
 }
 
@@ -148,7 +165,6 @@ button:hover {
     letter-spacing: 1px;
 }
 
-/* 하단 2단 분할 영역 */
 .body-section {
     display: grid;
     grid-template-columns: 1fr 1fr; 
@@ -185,7 +201,6 @@ button:hover {
     color: #eee;
 }
 
-/* 모바일 화면 대응 */
 @media(max-width: 1200px) {
     .wrapper { grid-template-columns: 1fr; }
     .canvas-container { padding: 10px; }
@@ -198,17 +213,23 @@ button:hover {
 
 <div class="wrapper">
 
-    <!-- 왼쪽 입력 패널 -->
     <div class="panel">
         <h2>캐릭터 입력</h2>
         
-        <!-- 💡 이름 입력칸 분리 -->
         <input id="engNameInput" placeholder="영문 이름 (예: Harry Potter)">
         <input id="korNameInput" placeholder="한글 이름 (예: 해리 포터)">
         
         <input id="ageInput" placeholder="나이">
         <input id="heightInput" placeholder="키">
-        <input id="houseInput" placeholder="기숙사">
+        
+        <select id="houseInput" required>
+            <option value="" disabled selected hidden>기숙사 선택 (배정식 전까지는 배정 전을 선택해주세요)</option>
+            <option value="그리핀도르">그리핀도르</option>
+            <option value="래번클로">래번클로</option>
+            <option value="후플푸프">후플푸프</option>
+            <option value="슬리데린">슬리데린</option>
+            <option value="기숙사 배정 전">기숙사 배정 전</option>
+        </select>
         
         <input id="keyword1" placeholder="성격 키워드 1">
         <input id="keyword2" placeholder="성격 키워드 2">
@@ -220,24 +241,21 @@ button:hover {
         <button onclick="downloadCard()">PNG 저장</button>
     </div>
 
-    <!-- 오른쪽 카드 미리보기 -->
     <div id="captureArea" class="canvas-container">
         <div id="card" class="card">
             
             <div class="content-area">
                 
                 <div class="header-section">
-                    <!-- 💡 이름 출력부 (영문 위, 한글 아래) -->
                     <div class="name-wrapper">
                         <div id="previewEngName" class="eng-name">ENGLISH NAME</div>
                         <div id="previewKorName" class="name">캐릭터 이름</div>
                     </div>
                     
                     <div class="sub-info">
-                        <span id="previewAge">세</span> / 
-                        <span id="previewHeight">cm</span> / 
-                        <span id="previewHouse"> </span>
-                    </div>
+                        <span id="previewAge">00세</span> / 
+                        <span id="previewHeight">000cm</span><span id="houseArea"> / <span id="previewHouse">기숙사</span></span>
+                        </div>
                 </div>
                 
                 <div class="body-section">
@@ -288,35 +306,10 @@ function bind(inputId, targetId, suffix = '', defaultVal = ''){
     });
 }
 
-// 💡 항목별 바인딩 실행 (영문/한글 분리)
 bind('engNameInput', 'previewEngName', '', 'ENGLISH NAME');
 bind('korNameInput', 'previewKorName', '', '캐릭터 이름');
 
 bind('ageInput', 'previewAge', '세', '00세');       
 bind('heightInput', 'previewHeight', 'cm', '000cm'); 
-bind('houseInput', 'previewHouse', '', '기숙사');
 
-bind('keyword1', 'tag1', '', '키워드1');
-bind('keyword2', 'tag2', '', '키워드2');
-bind('keyword3', 'tag3', '', '키워드3');
-
-bind('characterInfo', 'previewCharacter', '', '캐릭터의 상세한 정보를 입력해주세요.');
-bind('ownerInfo', 'previewOwner', '', '오너 정보를 입력해주세요.');
-
-// 이미지 다운로드 함수
-async function downloadCard(){
-    const captureArea = document.getElementById('captureArea');
-    const canvas = await html2canvas(captureArea, {
-        scale: 2,
-        backgroundColor: null, 
-        useCORS: true
-    });
-    const link = document.createElement('a');
-    link.download = 'character-card-name.png';
-    link.href = canvas.toDataURL();
-    link.click();
-}
-</script>
-
-</body>
-</html>
+// 💡 기숙사 전용 스크립트 (
