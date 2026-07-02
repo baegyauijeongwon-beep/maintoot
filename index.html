@@ -7,9 +7,34 @@
 <title>Character Card Maker (해리포터 기숙사 선택형)</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/font-kopub@1.0">
 <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 
+
+
 <style>
+    
+@font-face {
+    font-family: 'NexonLv1Gothic';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_20-04@2.1/NEXON Lv1 Gothic OTF Light.woff') format('woff');
+    font-weight: 300;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'NexonLv1Gothic';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_20-04@2.1/NEXON Lv1 Gothic OTF.woff') format('woff');
+    font-weight: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'NexonLv1Gothic';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_20-04@2.1/NEXON Lv1 Gothic OTF Bold.woff') format('woff');
+    font-weight: 700;
+    font-display: swap;
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -239,6 +264,13 @@ button:hover {
         <textarea id="characterInfo" placeholder="캐릭터 정보 및 서사"></textarea>
         <textarea id="ownerInfo" placeholder="오너 정보 및 한마디"></textarea>
         
+        <select id="fontSelect">
+            <option value="'Noto Serif KR', serif">노트_세리프</option>
+            <option value="'KoPub Dotum'">kopup 돋음</option>
+            <option value="'KoPub Batang'">kopup 명조</option>
+            <option value="'NexonLv1Gothic'">넥슨 Lv.1 고딕</option>
+        </select>
+        
         <button onclick="downloadCard()">PNG 저장</button>
     </div>
 
@@ -313,6 +345,12 @@ bind('korNameInput', 'previewKorName', '', '캐릭터 이름');
 
 bind('ageInput', 'previewAge', '세', '00세');       
 bind('heightInput', 'previewHeight', 'cm', '000cm'); 
+
+
+// 폰트 스크립트    
+document.getElementById("fontSelect").addEventListener("change", function () {
+    document.getElementById("card").style.fontFamily = this.value;
+});
 
 // 기숙사 전용 스크립트 (슬래쉬 숨김 처리 로직)
 document.getElementById('houseInput').addEventListener('change', function(e) {
