@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Character Card Maker (해리포터 기숙사 선택형)</title>
+<title>백야의 정원 메인툿</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/font-kopub@1.0">
@@ -59,11 +59,11 @@ body {
 
 /* 입력 패널 디자인 */
 .panel {
-    background: #111;
+    background: #e8e8e8;
     padding: 25px;
-    border: 1px solid rgba(0,0,0,.1);
+    border: 1px solid #1650be;
     border-radius: 12px;
-    color: white;
+    color: #1650be;
     height: fit-content;
     box-shadow: 0 10px 25px rgba(0,0,0,0.05);
 }
@@ -79,13 +79,20 @@ input, textarea, select {
     width: 100%;
     margin-bottom: 12px;
     padding: 10px;
-    background: #1a1a1a;
-    border: 1px solid rgba(255,255,255,.1);
-    color: white;
+    background: #1651be2d;
+    border: 1px solid #1650be;
+    color: #161616;
     font-family: inherit;
     border-radius: 6px;
 }
 
+input:focus,
+textarea:focus,
+select:focus {
+    outline: none;
+    border-color: #1650be;
+    box-shadow: 0 0 0 2px rgba(22, 80, 190, 0.15);
+}
 /* 셀렉트 박스 화살표 커스텀 (옵션) */
 select {
     cursor: pointer;
@@ -103,7 +110,7 @@ select:invalid {
 
 select option {
     color: white;
-    background: #222;
+    background: #1650be;
 }
 
 textarea {
@@ -114,7 +121,7 @@ textarea {
 button {
     width: 100%;
     padding: 12px;
-    background: #333;
+    background: #1650be;
     color: white;
     border: none;
     cursor: pointer;
@@ -125,7 +132,7 @@ button {
 }
 
 button:hover {
-    background: #555;
+    background: #0a2558;
 }
 
 .canvas-container {
@@ -138,17 +145,42 @@ button:hover {
 
 /* 가로형 카드 본체 */
 .card {
-    background: #ececec; 
-    color: #000000;
-    width: 850px; 
+    position: relative;
+    background: #e8e8e8;
+    width: 850px;
     min-height: 450px;
-    display: flex;
-    flex-direction: column;
-    
-    border-radius: 10px; 
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35); 
-    overflow: hidden; 
-    border: 1px solid rgba(255,255,255,0.03);
+    overflow: hidden;
+    border-radius: 10px;
+}
+
+.card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 180px;
+    background: url("AixkBrT.png") top center / 100% auto no-repeat;
+    z-index: 0;
+    pointer-events: none;
+    color: #161616;
+}
+
+.card::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 180px;
+    background: url("KOvmc6p.png") bottom center / 100% auto no-repeat;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.content-area {
+    position: relative;
+    z-index: 1;
 }
 
 .content-area {
@@ -161,7 +193,7 @@ button:hover {
 .header-section {
     margin-bottom: 30px;
     padding-bottom: 20px;
-    border-bottom: 1px solid rgba(255,255,255,.08);
+    border-bottom: 1px solid #1650be;
 }
 
 .name-wrapper {
@@ -173,7 +205,7 @@ button:hover {
 
 .eng-name {
     font-size: 15px;
-    color: #888;
+    color: #606060;
     letter-spacing: 3px;
     font-weight: 400;
 }
@@ -182,11 +214,12 @@ button:hover {
     font-size: 46px;
     font-weight: 700;
     line-height: 1.1;
+    color: #1650be;
 }
 
 .sub-info {
     font-size: 18px;
-    color: #ccc;
+    color: #373738;
     letter-spacing: 1px;
 }
 
@@ -195,6 +228,7 @@ button:hover {
     grid-template-columns: 1fr 1fr; 
     gap: 50px;
     flex: 1;
+    color: #373737;
 }
 
 .sectionTitle {
@@ -220,11 +254,40 @@ button:hover {
 
 .tag {
     background: rgba(255,255,255,.03);
-    border: 1px solid rgba(255,255,255,.15);
+    border: 1px solid #1650be;
     padding: 5px 12px;
     font-size: 13px;
-    color: #eee;
+    color: #1650be;
 }
+
+.footer-credit {
+    position: absolute;
+    left: 50%;
+    bottom: 15px;      /* 이 값으로 위치 조절 */
+    transform: translateX(-50%);
+
+    z-index: 1;
+
+    font-size: 10px;
+    letter-spacing: -0.3px;
+    color: #1650be;
+}
+
+.house-logo {
+    position: absolute;
+    top: 35px;
+    right: 40px;
+    width: 60px;
+    height: auto;
+    z-index: 2;
+    display: none;
+    pointer-events: none;
+}
+
+.footp {
+
+}
+
 
 /* 모바일 화면 대응 */
 @media(max-width: 1200px) {
@@ -238,18 +301,17 @@ button:hover {
 <body>
 
 <div class="wrapper">
-
     <div class="panel">
         <h2>캐릭터 입력</h2>
         
         <input id="engNameInput" placeholder="영문 이름 (예: Harry Potter)">
         <input id="korNameInput" placeholder="한글 이름 (예: 해리 포터)">
         
-        <input id="ageInput" placeholder="나이 (숫자만 입력해도 '세'가 붙습니다)">
-        <input id="heightInput" placeholder="키 (숫자만 입력해도 'cm'가 붙습니다)">
+        <input id="ageInput" placeholder="나이">
+        <input id="heightInput" placeholder="키">
         
         <select id="houseInput" required>
-            <option value="" disabled selected hidden>기숙사 선택 (예: 그리핀도르)</option>
+            <option value="" disabled selected hidden>기숙사 선택</option>
             <option value="그리핀도르">그리핀도르</option>
             <option value="래번클로">래번클로</option>
             <option value="후플푸프">후플푸프</option>
@@ -277,6 +339,7 @@ button:hover {
 
     <div id="captureArea" class="canvas-container">
         <div id="card" class="card">
+            <img id="houseLogo" class="house-logo" src="" alt="">
             
             <div class="content-area">
                 
@@ -313,6 +376,9 @@ button:hover {
                     
                 </div>
                 
+            </div>
+            <div class="footer-credit" id="footerCredit">
+                ⓒ 2026 백야의 정원 All Rights Reserved.
             </div>
         </div>
     </div>
@@ -358,12 +424,25 @@ document.getElementById('houseInput').addEventListener('change', function(e) {
     const val = e.target.value;
     const houseArea = document.getElementById('houseArea');
     const previewHouse = document.getElementById('previewHouse');
+    const houseLogo = document.getElementById('houseLogo');
+
+    const houseLogos = {
+        '그리핀도르': 'gryffindor.png',
+        '래번클로': 'ravenclaw.png',
+        '후플푸프': 'hufflepuff.png',
+        '슬리데린': 'slytherin.png'
+    };
 
     if(val === '기숙사 배정 전') {
         houseArea.style.display = 'none';
+        houseLogo.style.display = 'none';
+        houseLogo.removeAttribute('src');
     } else {
         houseArea.style.display = 'inline';
         previewHouse.textContent = val;
+
+        houseLogo.src = houseLogos[val];
+        houseLogo.style.display = 'block';
     }
 });
 
