@@ -350,6 +350,7 @@ bind('heightInput', 'previewHeight', 'cm', '000cm');
 // 폰트 스크립트    
 document.getElementById("fontSelect").addEventListener("change", function () {
     document.getElementById("card").style.fontFamily = this.value;
+    document.querySelector(".panel").style.fontFamily = this.value;
 });
 
 // 기숙사 전용 스크립트 (슬래쉬 숨김 처리 로직)
