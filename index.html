@@ -264,8 +264,8 @@ button:hover {
         <textarea id="characterInfo" placeholder="캐릭터 정보 및 서사"></textarea>
         <textarea id="ownerInfo" placeholder="오너 정보 및 한마디"></textarea>
         
-        <label for="fontSelect">폰트 선택</label>
-        <select id="fontSelect">
+        <select id="fontSelect" required>
+            <option value="" disabled selected hidden>폰트 선택</option>
             <option value="'Noto Serif KR', serif">노토 세리프</option>
             <option value="'KoPub Dotum'">KoPub 돋움</option>
             <option value="'KoPub Batang'">KoPub 명조</option>
